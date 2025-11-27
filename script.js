@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
       navLinks.classList.toggle("show");
     });
 
-    // Optional: close menu when a link is clicked (useful on mobile)
+    // Close menu when a link is clicked (on mobile)
     navLinks.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         navLinks.classList.remove("show");
@@ -30,9 +30,33 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", (e) => {
       e.preventDefault();
       alert(
-        "Thank you! This demo form is submitted locally. You can connect it to a real backend later."
+        "Thank you! This demo form is submitted locally. You can connect it to a real backend or email service later."
       );
       contactForm.reset();
     });
+  }
+
+  // 4) Scroll reveal for sections
+  const revealElements = document.querySelectorAll(".fade-in");
+
+  if ("IntersectionObserver" in window && revealElements.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.15,
+      }
+    );
+
+    revealElements.forEach((el) => observer.observe(el));
+  } else {
+    // Fallback: show all if IntersectionObserver not supported
+    revealElements.forEach((el) => el.classList.add("visible"));
   }
 });
