@@ -4,281 +4,787 @@
   <meta charset="UTF-8" />
   <title>Ashritha | Portfolio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-alt: #0f172a;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+      --accent-secondary: #ec4899; /* Pink for contrast */
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --card-bg: rgba(30, 41, 59, 0.4);
+      --border: rgba(255, 255, 255, 0.08);
+      --radius-lg: 20px;
+      --radius-md: 12px;
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* --- Dynamic Background --- */
+    .bg-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      animation: floatOrb 20s infinite ease-in-out alternate;
+    }
+    .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: var(--accent-secondary); bottom: -50px; right: -50px; animation-delay: -5s; }
+    .orb-3 { width: 200px; height: 200px; background: #3b82f6; top: 40%; left: 40%; animation-delay: -10s; opacity: 0.2; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, 50px) scale(1.1); }
+      100% { transform: translate(-20px, -30px) scale(0.9); }
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Scroll Progress */
+    .scroll-line {
+      position: fixed;
+      top: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      width: 0%; z-index: 1000;
+      transition: width 0.1s;
+    }
+
+    /* --- Typography --- */
+    h1, h2, h3 { line-height: 1.1; letter-spacing: -0.02em; }
+    .text-gradient {
+      background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .text-accent { color: var(--accent); }
+
+    .container {
+      width: min(1200px, 90%);
+      margin: 0 auto;
+    }
+
+    /* --- Navbar --- */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      padding: 1rem 0;
+      z-index: 100;
+      transition: background 0.3s, border-bottom 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .navbar.scrolled {
+      background: rgba(2, 6, 23, 0.8);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .logo {
+      font-weight: 800; font-size: 1.5rem;
+      background: linear-gradient(to right, var(--accent), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.95rem; font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: #fff; }
+
+    /* Mobile Nav */
+    .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+    
+    /* --- Spotlight Cards (Unique Feature) --- */
+    .spotlight-group {
+      display: grid;
+      gap: 1.5rem;
+    }
+    /* Dynamic columns based on parent class */
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .grid-1 { grid-template-columns: 1fr; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s;
+      /* For spotlight effect */
+      --mouse-x: 0px;
+      --mouse-y: 0px;
+    }
+    
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(
+        800px circle at var(--mouse-x) var(--mouse-y),
+        rgba(255, 255, 255, 0.06),
+        transparent 40%
+      );
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    
+    /* Border Glow */
+    .card::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(
+        600px circle at var(--mouse-x) var(--mouse-y),
+        rgba(99, 102, 241, 0.3),
+        transparent 40%
+      );
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+      border-radius: inherit;
+      padding: 1px; /* Border width */
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    .card:hover { transform: translateY(-4px); }
+    .card:hover::before, .card:hover::after { opacity: 1; }
+    
+    .card-content { position: relative; z-index: 2; }
+
+    /* --- Hero --- */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding-top: 5rem;
+      position: relative;
+    }
+    .hero-wrap {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4rem; width: 100%;
+    }
+    .hero-text { flex: 1; min-width: 300px; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 99px;
+      color: var(--accent);
+      font-size: 0.85rem; margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      margin-bottom: 1.5rem;
+      font-weight: 800;
+    }
+    .hero p {
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 500px; margin-bottom: 2.5rem;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      border-radius: 99px;
+      font-weight: 600; text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--text); color: var(--bg);
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .btn-outline:hover {
+      border-color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    .btn-github {
+      background: #1f2937;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-github:hover {
+      background: #374151;
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    /* Hero Image Animation */
+    .hero-img-box {
+      position: relative;
+      width: 320px; height: 320px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+    /* Pulse Rings */
+    .pulse-ring {
+      position: absolute;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      opacity: 0;
+      animation: pulse 3s infinite ease-out;
+      z-index: 1;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: 1s; }
+    .pulse-ring:nth-child(3) { animation-delay: 2s; }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.5; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* --- Section Styles --- */
+    section { padding: 6rem 0; }
+    .section-title {
+      font-size: 2.5rem; margin-bottom: 3rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-title::after {
+      content: ""; height: 1px; flex: 1;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      max-width: 200px;
+    }
+
+    /* Skills List */
+    .skill-list { list-style: none; display: grid; gap: 0.8rem; }
+    .skill-list li {
+      display: flex; align-items: center; gap: 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .skill-icon {
+      color: var(--accent);
+      background: rgba(99,102,241,0.1);
+      padding: 6px; border-radius: 6px;
+    }
+
+    /* Timeline (Education/Experience) */
+    .timeline-item {
+      border-left: 2px solid var(--border);
+      padding-left: 1.5rem;
+      padding-bottom: 0.5rem;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .timeline-item:hover { border-left-color: var(--accent); }
+    .timeline-item::before {
+      content: ""; position: absolute; left: -6px; top: 0;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--accent);
+    }
+    .timeline-date {
+      font-size: 0.85rem; color: var(--accent); margin-bottom: 0.25rem; font-weight: 600;
+    }
+    .timeline-title { font-size: 1.1rem; color: #fff; margin-bottom: 0.2rem; }
+    .timeline-place { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+
+    /* Projects */
+    .project-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .project-tags {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+    }
+    .tag {
+      font-size: 0.75rem; padding: 0.2rem 0.6rem;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted);
+    }
+    .project-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .project-btn-wrap { margin-top: auto; }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.9rem; color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      background: rgba(99, 102, 241, 0.2);
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .project-link:hover { background: rgba(99, 102, 241, 0.4); }
+
+    /* Contact Form */
+    .form-group { margin-bottom: 1rem; }
+    .form-input {
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      color: #fff; font-family: inherit;
+      transition: border-color 0.3s;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+
+    /* Animation Classes */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .hero-wrap { flex-direction: column-reverse; text-align: center; }
+      .hero-btns { justify-content: center; }
+      .nav-links {
+        position: fixed; top: 0; right: 0; height: 100vh; width: 80%;
+        background: var(--bg-alt);
+        flex-direction: column; padding: 4rem 2rem;
+        transform: translateX(100%);
+        transition: transform 0.3s; border-left: 1px solid var(--border);
+      }
+      .nav-links.active { transform: translateX(0); }
+      .nav-toggle { display: block; z-index: 101; }
+      .hero-img-box { width: 260px; height: 260px; }
+    }
+  </style>
 </head>
 <body>
-  <!-- Header / Hero -->
-  <header class="hero">
-    <div class="container hero-content">
-      <div class="hero-left">
-        <p class="hero-pill">Final-year ECE • Aspiring Software Developer</p>
-        <h1>Yerukonda Ashritha</h1>
-        <p class="tagline">
-          Building efficient, user-friendly software and bridging the gap between hardware and software with web, data, and embedded systems.
-        </p>
-        <div class="hero-buttons">
-          <a href="#projects" class="btn primary">View Projects</a>
-          <a href="#contact" class="btn secondary">Contact Me</a>
-        </div>
-        <div class="hero-meta">
-          <span>📍 Hyderabad, Telangana</span>
-          <span>👩‍🎓 ECE (2022–2026)</span>
-        </div>
-      </div>
 
-      <div class="hero-right">
-        <div class="hero-card">
-          <h2>Contact Info</h2>
-          <p>📞 +91 7680812779</p>
-          <p>
-            📧
-            <a href="mailto:yerukondaashritha2@gmail.com">
-              yerukondaashritha2@gmail.com
-            </a>
-          </p>
-          <p>
-            🔗
-            <a href="https://www.linkedin.com/in/ashritha-yerukonda-3093b3325" target="_blank">
-              LinkedIn Profile
-            </a>
-          </p>
-        </div>
-        <div class="hero-badge">
-          <span>Web & Data Enthusiast</span>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- Backgrounds -->
+  <div class="bg-canvas">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+  <div class="scroll-line" id="scrollLine"></div>
 
   <!-- Navbar -->
-  <nav class="navbar">
-    <div class="container nav-content">
-      <div class="logo">Ashritha</div>
-      <ul class="nav-links">
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="logo">Ashritha.</a>
+      <button class="nav-toggle" id="navToggle">☰</button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
         <li><a href="#skills">Skills</a></li>
-        <li><a href="#education">Education</a></li>
         <li><a href="#projects">Projects</a></li>
-        <li><a href="#experience">Internships</a></li>
-        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#experience">Experience</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
-      <button class="nav-toggle" id="navToggle">☰</button>
     </div>
   </nav>
 
-  <main>
-    <!-- About -->
-    <section id="about" class="section fade-in">
-      <div class="container">
-        <h2>About Me</h2>
-        <p class="about-text">
-          Final-year Electronics and Communication Engineering (ECE) student with strong fundamentals in communication systems, embedded design, and signal processing. Skilled in C, Python, HTML, CSS, JavaScript, SQL, and MySQL with hands-on experience in web technologies and database management. Passionate about building clean, scalable applications and exploring how hardware and software can work together to solve real-world problems.
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-wrap">
+      <div class="hero-text fade-up">
+        <div class="pill">
+          <span>●</span> Available for work
+        </div>
+        <h1>Yerukonda <span class="text-gradient">Ashritha</span></h1>
+        <p>
+          Final-year ECE student bridging the gap between embedded systems and modern web development. Building efficient, scalable solutions.
         </p>
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section id="skills" class="section section-alt fade-in">
-      <div class="container">
-        <h2>Skills</h2>
-        <div class="skills-grid">
-          <div class="card">
-            <h3>Programming</h3>
-            <ul>
-              <li>C</li>
-              <li>Python</li>
-              <li>SQL</li>
-              <li>HTML, CSS, JavaScript</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Technologies</h3>
-            <ul>
-              <li>Web Development</li>
-              <li>MySQL</li>
-              <li>MATLAB</li>
-              <li>Keil µVision</li>
-              <li>Arduino, Raspberry Pi</li>
-              <li>Multisim</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Technical Concepts</h3>
-            <ul>
-              <li>VLSI Design</li>
-              <li>Embedded Systems</li>
-              <li>IoT</li>
-              <li>Digital Signal Processing</li>
-              <li>Hardware–Software Integration</li>
-              <li>Verilog, MATLAB</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Soft Skills</h3>
-            <ul>
-              <li>Team Collaboration</li>
-              <li>Time Management</li>
-              <li>Logical &amp; Critical Thinking</li>
-            </ul>
-          </div>
+        <div class="hero-btns">
+          <!-- Main Action -->
+          <a href="#projects" class="btn btn-primary">
+            View Projects
+          </a>
+          <!-- GITHUB BUTTON (Added per request) -->
+          <a href="https://github.com/ashrithayerukonda" target="_blank" class="btn btn-github">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+            GitHub
+          </a>
+          <!-- Contact -->
+          <a href="#contact" class="btn btn-outline">Contact Me</a>
         </div>
       </div>
-    </section>
 
-    <!-- Education -->
-    <section id="education" class="section fade-in">
-      <div class="container">
-        <h2>Education</h2>
-        <div class="timeline">
-          <div class="timeline-item">
-            <h3>Nalla Malla Reddy Engineering College</h3>
-            <p class="timeline-sub">
-              B.Tech in Electronics &amp; Communication Engineering (2022 – 2026)
-            </p>
-            <p>Hyderabad, Telangana</p>
-          </div>
-          <div class="timeline-item">
-            <h3>SR Junior College</h3>
-            <p class="timeline-sub">
-              Board of Intermediate Education (2020 – 2022) | 76%
-            </p>
-            <p>Hanamkonda</p>
-          </div>
-          <div class="timeline-item">
-            <h3>Shradha High School</h3>
-            <p class="timeline-sub">
-              Secondary School Certificate (2019 – 2020) | 10 CGPA
-            </p>
-            <p>Parakl, Hanamkonda District</p>
-          </div>
-        </div>
+      <div class="hero-img-box fade-up delay-200">
+        <div class="pulse-ring"></div>
+        <div class="pulse-ring"></div>
+        <img src="https://i.ibb.co/SwYKy9Ck/Whats-App-Image-2026-02-01-at-7-24-54-PM.jpg" alt="Ashritha" class="hero-img" />
       </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects" class="section section-alt fade-in">
-      <div class="container">
-        <h2>Projects</h2>
-        <div class="project-grid">
-          <article class="project-card">
-            <div class="project-header">
-              <h3>Soil Monitoring System for Improved Crop Yield</h3>
-              <span class="project-tag">IoT • Embedded • Mechanical</span>
-            </div>
-            <p class="project-tech">
-              Technologies: Python, Sensors, IoT, Mechanical Design
-            </p>
-            <p>
-              Designed and developed an eco-friendly, non-electric soil monitoring system to optimize agricultural productivity by tracking key soil parameters such as moisture and temperature.
-            </p>
-            <p>
-              Used bimetallic strip-based sensing mechanisms and mechanical gear systems to eliminate external power requirements, enabling low-cost, sustainable irrigation and crop management.
-            </p>
-          </article>
-
-          <!-- Placeholder for future project -->
-          <article class="project-card project-card-placeholder">
-            <div class="project-header">
-              <h3>Your Next Project</h3>
-              <span class="project-tag">Coming Soon</span>
-            </div>
-            <p class="project-tech">
-              Add a web app, data project, or embedded prototype here.
-            </p>
-            <p>
-              You can showcase project screenshots, GitHub links, and a short description highlighting your role, tech stack, and impact.
-            </p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- Internships / Training -->
-    <section id="experience" class="section fade-in">
-      <div class="container">
-        <h2>Internships &amp; Training</h2>
-        <div class="card-list">
-          <div class="card">
-            <h3>Advanced Prompt Engineering with ChatGPT</h3>
-            <p>
-              Hands-on experience designing prompts and using AI tools for problem-solving and idea generation.
-            </p>
-          </div>
-          <div class="card">
-            <h3>Java Full Stack Developer (Virtual Internship)</h3>
-            <p>
-              Exposure to Java-based web development, REST APIs, and full-stack application workflows.
-            </p>
-          </div>
-          <div class="card">
-            <h3>Google Cloud Generative AI Studio</h3>
-            <p>
-              Practical experience with cloud-based generative AI tools, model workflows, and experimentation.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Certifications -->
-    <section id="certifications" class="section section-alt fade-in">
-      <div class="container">
-        <h2>Certifications</h2>
-        <ul class="cert-list">
-          <li>IBM Skill Build – Data Analytics (IBM)</li>
-          <li>IBM Developer – Python 101 for Data Science (IBM)</li>
-          <li>AWS Cloud Practitioner Essentials (Amazon)</li>
-          <li>Introduction to Soft Skills – TCS iON (Tata Consultancy Services)</li>
-          <li>Web Design Course for Beginners to Intermediate (Udemy)</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="section fade-in">
-      <div class="container">
-        <h2>Contact</h2>
-        <p class="contact-intro">
-          Open to software development roles, internships, and collaborative projects. Feel free to reach out.
-        </p>
-        <div class="contact-grid">
-          <div class="contact-info">
-            <p>
-              📧 Email:
-              <a href="mailto:yerukondaashritha2@gmail.com">
-                yerukondaashritha2@gmail.com
-              </a>
-            </p>
-            <p>
-              🔗 LinkedIn:
-              <a href="https://www.linkedin.com/in/ashritha-yerukonda-3093b3325" target="_blank">
-                ashritha-yerukonda-3093b3325
-              </a>
-            </p>
-            <p>📍 Location: Hyderabad, Telangana, India</p>
-          </div>
-          <form class="contact-form" id="contactForm">
-            <input type="text" id="name" placeholder="Your Name" required />
-            <input type="email" id="email" placeholder="Your Email" required />
-            <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
-            <button type="submit" class="btn primary">Send Message (Demo)</button>
-            <p class="form-note">
-              This is a front-end demo only. You can connect it to a backend or email service later.
-            </p>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <p>© <span id="year"></span> Yerukonda Ashritha. All rights reserved.</p>
     </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title fade-up">About Me</h2>
+      <div class="spotlight-group grid-1 fade-up delay-100">
+        <div class="card">
+          <div class="card-content">
+            <p style="color: var(--text-muted); font-size: 1.1rem;">
+              I am a final-year Electronics and Communication Engineering (ECE) student passionate about solving real-world problems through technology. With a strong foundation in both hardware (Embedded systems, IoT) and software (Web Development, Database Management), I aim to create integrated solutions. I thrive in collaborative environments and am constantly learning new technologies to stay ahead in the tech landscape.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title fade-up">Technical Skills</h2>
+      <div class="spotlight-group grid-3 fade-up">
+        <!-- Card 1 -->
+        <div class="card delay-100">
+          <div class="card-content">
+            <h3 class="text-accent">Languages</h3>
+            <div style="margin-top: 1rem;"></div>
+            <ul class="skill-list">
+              <li><span class="skill-icon">C</span> C Programming</li>
+              <li><span class="skill-icon">Py</span> Python</li>
+              <li><span class="skill-icon">JS</span> JavaScript</li>
+              <li><span class="skill-icon">SQL</span> SQL & MySQL</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="card delay-200">
+          <div class="card-content">
+            <h3 class="text-accent">Web Tech</h3>
+            <div style="margin-top: 1rem;"></div>
+            <ul class="skill-list">
+              <li><span class="skill-icon">&lt;/&gt;</span> HTML5 & CSS3</li>
+              <li><span class="skill-icon">Re</span> React (Learning)</li>
+              <li><span class="skill-icon">No</span> Node.js (Basic)</li>
+              <li><span class="skill-icon">Fb</span> Firebase</li>
+            </ul>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="card delay-300">
+          <div class="card-content">
+            <h3 class="text-accent">Hardware</h3>
+            <div style="margin-top: 1rem;"></div>
+            <ul class="skill-list">
+              <li><span class="skill-icon">IoT</span> Internet of Things</li>
+              <li><span class="skill-icon">Ard</span> Arduino & RPi</li>
+              <li><span class="skill-icon">Mat</span> MATLAB</li>
+              <li><span class="skill-icon">VLSI</span> VLSI Design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title fade-up">Featured Projects</h2>
+      <div class="spotlight-group grid-2 fade-up">
+        
+        <!-- Project 1 -->
+        <article class="card project-card delay-100">
+          <div class="card-content">
+            <h3>Soil Monitoring System</h3>
+            <div class="project-tags">
+              <span class="tag">IoT</span>
+              <span class="tag">Embedded</span>
+              <span class="tag">Python</span>
+            </div>
+            <p class="project-desc">
+              Designed an eco-friendly, non-electric soil monitoring system to optimize agricultural productivity. Utilizes bimetallic strips and mechanical gears to track moisture and temperature without external power.
+            </p>
+            <div class="project-btn-wrap">
+              <!-- ADDED GITHUB BUTTON TO PROJECT -->
+              <a href="#" class="project-link" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                View Code
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="card project-card delay-200">
+          <div class="card-content">
+            <h3>Full Stack Web App</h3>
+            <div class="project-tags">
+              <span class="tag">React</span>
+              <span class="tag">Firebase</span>
+              <span class="tag">Tailwind</span>
+            </div>
+            <p class="project-desc">
+              Currently developing a scalable full-stack application. Features include user authentication, real-time database updates, and a responsive UI. (Work in Progress).
+            </p>
+            <div class="project-btn-wrap">
+              <!-- ADDED GITHUB BUTTON TO PROJECT -->
+              <a href="#" class="project-link" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                View Code
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience & Education -->
+  <section id="experience">
+    <div class="container">
+      <div class="spotlight-group grid-2">
+        
+        <!-- Experience Column -->
+        <div class="card fade-up">
+          <div class="card-content">
+            <h3 style="margin-bottom: 1.5rem;">Experience</h3>
+            
+            <div class="timeline-item">
+              <div class="timeline-date">Current</div>
+              <div class="timeline-title">Co-Team Leader</div>
+              <div class="timeline-place">Blue Planner</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Leading team coordination and ensuring project milestones for "Blue Planner Infiltration".
+              </p>
+            </div>
+
+            <div class="timeline-item" style="margin-top: 1.5rem;">
+              <div class="timeline-date">Training</div>
+              <div class="timeline-title">Prompt Engineering</div>
+              <div class="timeline-place">ChatGPT Training</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Advanced prompt design and AI tool utilization.
+              </p>
+            </div>
+
+            <div class="timeline-item" style="margin-top: 1.5rem;">
+              <div class="timeline-date">Internship</div>
+              <div class="timeline-title">Java Full Stack</div>
+              <div class="timeline-place">Virtual Internship</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Education Column -->
+        <div class="card fade-up delay-100">
+          <div class="card-content">
+            <h3 style="margin-bottom: 1.5rem;">Education</h3>
+            
+            <div class="timeline-item">
+              <div class="timeline-date">2022 - 2026</div>
+              <div class="timeline-title">B.Tech Electronics (ECE)</div>
+              <div class="timeline-place">Nalla Malla Reddy Engineering College</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">Pursuing final year.</p>
+            </div>
+
+            <div class="timeline-item" style="margin-top: 1.5rem;">
+              <div class="timeline-date">2020 - 2022</div>
+              <div class="timeline-title">Intermediate (MPC)</div>
+              <div class="timeline-place">SR Junior College</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">76% Aggregate</p>
+            </div>
+
+            <div class="timeline-item" style="margin-top: 1.5rem;">
+              <div class="timeline-date">2020</div>
+              <div class="timeline-title">Secondary School (SSC)</div>
+              <div class="timeline-place">Shradha High School</div>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">10 CGPA</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" style="padding-bottom: 8rem;">
+    <div class="container">
+      <h2 class="section-title fade-up">Get In Touch</h2>
+      <div class="spotlight-group grid-2 fade-up">
+        
+        <div class="card">
+          <div class="card-content">
+            <h3>Let's Connect</h3>
+            <p style="margin: 1rem 0 2rem; color: var(--text-muted);">
+              I'm currently looking for full-time opportunities or internships in software development. If you have a question or just want to say hi, my inbox is always open!
+            </p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <a href="mailto:yerukondaashritha2@gmail.com" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+                <span class="skill-icon">✉</span> yerukondaashritha2@gmail.com
+              </a>
+              <a href="tel:+917680812779" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+                <span class="skill-icon">📞</span> +91 7680812779
+              </a>
+              <a href="https://www.linkedin.com/in/ashritha-yerukonda-3093b3325" target="_blank" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+                <span class="skill-icon">in</span> LinkedIn Profile
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-content">
+            <form id="contactForm">
+              <div class="form-group">
+                <input type="text" class="form-input" placeholder="Name" required>
+              </div>
+              <div class="form-group">
+                <input type="email" class="form-input" placeholder="Email" required>
+              </div>
+              <div class="form-group">
+                <textarea rows="4" class="form-input" placeholder="Message" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem;">
+    <p>© <span id="year"></span> Yerukonda Ashritha. All rights reserved.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // --- Spotlight Effect Logic (The "Unique" Animation) ---
+    // This tracks the mouse over cards and updates CSS variables
+    // to create the flashlight glow effect.
+    const handleOnMouseMove = e => {
+      const { currentTarget: target } = e;
+      const rect = target.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      target.style.setProperty("--mouse-x", `${x}px`);
+      target.style.setProperty("--mouse-y", `${y}px`);
+    }
+
+    for(const card of document.querySelectorAll(".card")) {
+      card.onmousemove = e => handleOnMouseMove(e);
+    }
+
+    // --- Intersection Observer for Scroll Animations ---
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // --- Navbar Scroll Effect ---
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+
+      // Scroll Progress Line
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById("scrollLine").style.width = scrolled + "%";
+    });
+
+    // --- Mobile Nav Toggle ---
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    // Close nav when link clicked
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
+    });
+
+    // --- Form Handling ---
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const originalText = btn.textContent;
+      btn.textContent = "Message Sent!";
+      btn.style.background = "#22c55e"; // Green
+      e.target.reset();
+      
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = "";
+      }, 3000);
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
