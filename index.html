@@ -6,15 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
+      /* Blue & Pink Cyber Theme */
       --bg: #020617;
       --bg-alt: #0f172a;
-      --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.4);
-      --accent-secondary: #ec4899; /* Pink for contrast */
+      --accent: #3b82f6; /* Blue */
+      --accent-glow: rgba(59, 130, 246, 0.4);
+      --accent-secondary: #ec4899; /* Pink */
       --text: #f8fafc;
       --text-muted: #94a3b8;
-      --card-bg: rgba(30, 41, 59, 0.4);
-      --border: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(15, 23, 42, 0.6);
+      --border: rgba(59, 130, 246, 0.15);
+      
       --radius-lg: 20px;
       --radius-md: 12px;
     }
@@ -36,6 +38,7 @@
       color: var(--text);
       overflow-x: hidden;
       line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* --- Dynamic Background --- */
@@ -44,44 +47,66 @@
       top: 0; left: 0; width: 100%; height: 100%;
       z-index: -1;
       overflow: hidden;
+      background: radial-gradient(circle at 50% 0%, rgba(15, 30, 60, 0.5), var(--bg) 60%);
     }
 
     .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.4;
-      animation: floatOrb 20s infinite ease-in-out alternate;
+      filter: blur(90px);
+      opacity: 0.35;
+      animation: floatOrb 25s infinite ease-in-out alternate;
     }
-    .orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; left: -100px; }
-    .orb-2 { width: 300px; height: 300px; background: var(--accent-secondary); bottom: -50px; right: -50px; animation-delay: -5s; }
-    .orb-3 { width: 200px; height: 200px; background: #3b82f6; top: 40%; left: 40%; animation-delay: -10s; opacity: 0.2; }
+    .orb-1 { width: 450px; height: 450px; background: var(--accent); top: -150px; left: -100px; }
+    .orb-2 { width: 350px; height: 350px; background: var(--accent-secondary); bottom: -100px; right: -50px; animation-delay: -7s; }
+    .orb-3 { width: 250px; height: 250px; background: #8b5cf6; top: 40%; left: 40%; animation-delay: -12s; opacity: 0.2; }
 
     @keyframes floatOrb {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(30px, 50px) scale(1.1); }
-      100% { transform: translate(-20px, -30px) scale(0.9); }
+      0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+      50% { transform: translate(40px, 60px) scale(1.1) rotate(180deg); }
+      100% { transform: translate(-30px, -40px) scale(0.9) rotate(360deg); }
     }
 
+    /* Tech-Dot Grid Overlay */
     .grid-overlay {
       position: fixed;
       inset: 0;
-      background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+      background-image: radial-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px);
+      background-size: 30px 30px;
+      mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 80%);
       pointer-events: none;
       z-index: -1;
+    }
+
+    /* Holographic Animals Background */
+    .holo-animal {
+      position: absolute;
+      color: var(--accent);
+      opacity: 0.08;
+      z-index: -1;
+      filter: drop-shadow(0 0 15px var(--accent));
+      animation: floatAnimal 18s infinite ease-in-out alternate;
+      pointer-events: none;
+    }
+    .holo-1 { top: 15%; left: 8%; animation-delay: -2s; width: 120px; }
+    .holo-2 { top: 65%; right: 5%; animation-delay: -6s; color: var(--accent-secondary); filter: drop-shadow(0 0 15px var(--accent-secondary)); width: 180px; }
+    .holo-3 { bottom: 15%; left: 25%; animation-delay: -10s; width: 100px; }
+
+    @keyframes floatAnimal {
+      0% { transform: translateY(0) rotate(-5deg) scale(0.9); }
+      50% { transform: translateY(-30px) rotate(5deg) scale(1); }
+      100% { transform: translateY(10px) rotate(-2deg) scale(1.05); }
     }
 
     /* Scroll Progress */
     .scroll-line {
       position: fixed;
-      top: 0; left: 0; height: 3px;
+      top: 0; left: 0; height: 4px;
       background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
       width: 0%; z-index: 1000;
       transition: width 0.1s;
+      box-shadow: 0 0 10px var(--accent);
     }
 
     /* --- Typography --- */
@@ -96,20 +121,24 @@
     .container {
       width: min(1200px, 90%);
       margin: 0 auto;
+      position: relative;
     }
 
     /* --- Navbar --- */
     .navbar {
       position: fixed;
       top: 0; left: 0; width: 100%;
-      padding: 1rem 0;
+      padding: 1.2rem 0;
       z-index: 100;
-      transition: background 0.3s, border-bottom 0.3s;
-      backdrop-filter: blur(10px);
+      transition: background 0.3s, border-bottom 0.3s, padding 0.3s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
     .navbar.scrolled {
-      background: rgba(2, 6, 23, 0.8);
+      background: rgba(2, 6, 23, 0.85);
       border-bottom: 1px solid var(--border);
+      padding: 0.8rem 0;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
     }
     .nav-inner {
       display: flex; justify-content: space-between; align-items: center;
@@ -119,16 +148,23 @@
       background: linear-gradient(to right, var(--accent), var(--accent-secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      display: flex; align-items: center; gap: 0.5rem;
     }
+    
     .nav-links {
-      display: flex; gap: 2rem; list-style: none;
+      display: flex; gap: 2.5rem; list-style: none;
     }
     .nav-links a {
       color: var(--text-muted); text-decoration: none;
-      font-size: 0.95rem; font-weight: 500;
-      transition: color 0.3s;
+      font-size: 0.95rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      transition: color 0.3s, text-shadow 0.3s;
     }
-    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover { 
+      color: var(--accent); 
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
 
     /* Mobile Nav */
     .nav-toggle { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -136,9 +172,8 @@
     /* --- Spotlight Cards (Unique Feature) --- */
     .spotlight-group {
       display: grid;
-      gap: 1.5rem;
+      gap: 2rem;
     }
-    /* Dynamic columns based on parent class */
     .grid-2 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
     .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
     .grid-1 { grid-template-columns: 1fr; }
@@ -147,10 +182,10 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 2.5rem;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
       /* For spotlight effect */
       --mouse-x: 0px;
       --mouse-y: 0px;
@@ -162,7 +197,7 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(
         800px circle at var(--mouse-x) var(--mouse-y),
-        rgba(255, 255, 255, 0.06),
+        rgba(59, 130, 246, 0.08),
         transparent 40%
       );
       z-index: 1;
@@ -178,7 +213,7 @@
       top: 0; left: 0; right: 0; bottom: 0;
       background: radial-gradient(
         600px circle at var(--mouse-x) var(--mouse-y),
-        rgba(99, 102, 241, 0.3),
+        rgba(236, 72, 153, 0.5),
         transparent 40%
       );
       z-index: 0;
@@ -186,13 +221,16 @@
       transition: opacity 0.5s;
       pointer-events: none;
       border-radius: inherit;
-      padding: 1px; /* Border width */
+      padding: 1px;
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
     }
 
-    .card:hover { transform: translateY(-4px); }
+    .card:hover { 
+      transform: translateY(-8px); 
+      box-shadow: 0 15px 35px -10px rgba(59, 130, 246, 0.3); 
+    }
     .card:hover::before, .card:hover::after { opacity: 1; }
     
     .card-content { position: relative; z-index: 2; }
@@ -201,29 +239,55 @@
     .hero {
       min-height: 100vh;
       display: flex; align-items: center;
-      padding-top: 5rem;
+      padding-top: 6rem;
       position: relative;
     }
     .hero-wrap {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4rem; width: 100%;
     }
-    .hero-text { flex: 1; min-width: 300px; }
+    .hero-text { flex: 1; min-width: 300px; display: flex; flex-col; z-index: 10; }
     .pill {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: rgba(99, 102, 241, 0.1);
-      border: 1px solid rgba(99, 102, 241, 0.2);
-      border-radius: 99px;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.5rem 1.2rem;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-md);
       color: var(--accent);
       font-size: 0.85rem; margin-bottom: 1.5rem;
+      width: fit-content;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
-    .hero h1 {
-      font-size: clamp(3rem, 5vw, 4.5rem);
-      margin-bottom: 1.5rem;
-      font-weight: 800;
+    
+    /* Particle Canvas Container */
+    .canvas-container {
+      width: 100%;
+      height: 150px;
+      position: relative;
+      margin-left: -20px;
     }
+    
+    #particle-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
     .hero p {
-      font-size: 1.15rem; color: var(--text-muted);
+      font-size: 1.1rem; color: var(--text-muted);
       max-width: 500px; margin-bottom: 2.5rem;
     }
     .hero-btns {
@@ -234,28 +298,33 @@
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
       padding: 0.8rem 1.8rem;
-      border-radius: 99px;
+      border-radius: var(--radius-md);
       font-weight: 600; text-decoration: none;
-      transition: all 0.3s;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       font-size: 0.95rem;
       cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     .btn-primary {
       background: var(--text); color: var(--bg);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     }
     .btn-primary:hover {
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px) scale(1.02);
     }
     .btn-outline {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
     }
     .btn-outline:hover {
-      border-color: var(--text);
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.15);
+      color: #fff;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
     }
     .btn-github {
       background: #1f2937;
@@ -264,130 +333,171 @@
     }
     .btn-github:hover {
       background: #374151;
-      transform: translateY(-2px);
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
 
     /* Hero Image Animation */
     .hero-img-box {
       position: relative;
-      width: 320px; height: 320px;
+      width: 340px; height: 340px;
       display: flex; align-items: center; justify-content: center;
     }
     .hero-img {
       width: 100%; height: 100%;
       object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 50%; /* Perfect Circle */
+      border: 2px solid rgba(59, 130, 246, 0.3);
       position: relative;
       z-index: 2;
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
     }
     /* Pulse Rings */
     .pulse-ring {
       position: absolute;
-      width: 100%; height: 100%;
-      border-radius: 50%;
+      width: 110%; height: 110%;
+      border-radius: 50%; /* Perfect Circle */
       border: 1px solid var(--accent);
       opacity: 0;
       animation: pulse 3s infinite ease-out;
       z-index: 1;
     }
-    .pulse-ring:nth-child(2) { animation-delay: 1s; }
+    .pulse-ring:nth-child(2) { animation-delay: 1s; border-color: var(--accent-secondary); }
     .pulse-ring:nth-child(3) { animation-delay: 2s; }
 
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.5; }
-      100% { transform: scale(1.5); opacity: 0; }
+      0% { transform: scale(0.9); opacity: 0.8; }
+      100% { transform: scale(1.3); opacity: 0; }
     }
 
     /* --- Section Styles --- */
-    section { padding: 6rem 0; }
+    section { padding: 8rem 0; position: relative; }
     .section-title {
-      font-size: 2.5rem; margin-bottom: 3rem;
+      font-size: 2.5rem; margin-bottom: 3.5rem;
       display: flex; align-items: center; gap: 1rem;
+      font-weight: 800;
     }
     .section-title::after {
-      content: ""; height: 1px; flex: 1;
+      content: ""; height: 2px; flex: 1;
       background: linear-gradient(90deg, var(--accent), transparent);
-      max-width: 200px;
+      max-width: 300px;
+      border-radius: 2px;
     }
 
     /* Skills List */
-    .skill-list { list-style: none; display: grid; gap: 0.8rem; }
+    .skill-list { list-style: none; display: grid; gap: 1rem; }
     .skill-list li {
-      display: flex; align-items: center; gap: 0.8rem;
+      display: flex; align-items: center; gap: 1rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: 1rem;
+      font-weight: 500;
     }
     .skill-icon {
       color: var(--accent);
-      background: rgba(99,102,241,0.1);
-      padding: 6px; border-radius: 6px;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 8px; border-radius: var(--radius-md);
+      width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 700;
+      transition: all 0.3s;
+    }
+    .skill-list li:hover .skill-icon {
+      background: var(--accent);
+      color: var(--bg);
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 15px var(--accent-glow);
     }
 
     /* Timeline (Education/Experience) */
     .timeline-item {
-      border-left: 2px solid var(--border);
-      padding-left: 1.5rem;
-      padding-bottom: 0.5rem;
+      border-left: 2px dashed var(--border);
+      padding-left: 1.8rem;
+      padding-bottom: 1.5rem;
       position: relative;
       transition: border-color 0.3s;
     }
     .timeline-item:hover { border-left-color: var(--accent); }
     .timeline-item::before {
-      content: ""; position: absolute; left: -6px; top: 0;
-      width: 10px; height: 10px; border-radius: 50%;
+      content: ""; position: absolute; left: -7px; top: 0;
+      width: 12px; height: 12px; border-radius: 50%; /* Circle */
       background: var(--bg); border: 2px solid var(--accent);
+      transition: all 0.3s;
+    }
+    .timeline-item:hover::before {
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      transform: scale(1.3);
     }
     .timeline-date {
-      font-size: 0.85rem; color: var(--accent); margin-bottom: 0.25rem; font-weight: 600;
+      font-size: 0.85rem; color: var(--accent); margin-bottom: 0.4rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
-    .timeline-title { font-size: 1.1rem; color: #fff; margin-bottom: 0.2rem; }
-    .timeline-place { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .timeline-title { font-size: 1.2rem; color: #fff; margin-bottom: 0.2rem; font-weight: 600; }
+    .timeline-place { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 
     /* Projects */
-    .project-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .project-card { display: flex; flex-direction: column; }
+    .project-card h3 { font-size: 1.5rem; margin-bottom: 0.8rem; font-weight: 700; }
     .project-tags {
-      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.2rem;
     }
     .tag {
-      font-size: 0.75rem; padding: 0.2rem 0.6rem;
-      border-radius: 99px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: var(--text-muted);
+      font-size: 0.75rem; padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-md);
+      background: rgba(236, 72, 153, 0.1);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+      color: var(--accent-secondary);
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
     }
-    .project-desc { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-    .project-btn-wrap { margin-top: auto; }
+    .project-desc { font-size: 1rem; color: var(--text-muted); margin-bottom: 1.5rem; flex-grow: 1; line-height: 1.7; }
+    .project-btn-wrap { margin-top: auto; padding-top: 1rem; }
     .project-link {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.9rem; color: #fff;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      background: rgba(99, 102, 241, 0.2);
-      border-radius: 6px;
-      transition: background 0.3s;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.9rem; font-weight: 600; color: #fff;
+      text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;
+      padding: 0.8rem 1.5rem;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-md);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .project-link:hover { background: rgba(99, 102, 241, 0.4); }
+    .project-link:hover { 
+      background: var(--accent); 
+      color: var(--bg);
+      transform: translateY(-3px); 
+      box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
 
     /* Contact Form */
-    .form-group { margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1.2rem; }
     .form-input {
       width: 100%;
-      background: rgba(0,0,0,0.2);
+      background: rgba(0,0,0,0.3);
       border: 1px solid var(--border);
-      padding: 1rem;
+      padding: 1.2rem;
       border-radius: var(--radius-md);
-      color: #fff; font-family: inherit;
-      transition: border-color 0.3s;
+      color: #fff; font-family: inherit; font-size: 1rem;
+      transition: all 0.3s;
     }
-    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-input:focus { 
+      outline: none; 
+      border-color: var(--accent); 
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
+      background: rgba(0,0,0,0.5);
+    }
+
+    /* Animal Accent Icons inside titles */
+    .title-icon {
+      color: var(--accent-secondary);
+      filter: drop-shadow(0 0 5px var(--accent-secondary));
+    }
 
     /* Animation Classes */
     .fade-up {
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .fade-up.visible {
       opacity: 1;
@@ -399,22 +509,56 @@
 
     /* Mobile */
     @media (max-width: 768px) {
-      .hero-wrap { flex-direction: column-reverse; text-align: center; }
+      .hero-wrap { flex-direction: column-reverse; text-align: center; gap: 2rem; }
+      .hero-text { align-items: center; }
       .hero-btns { justify-content: center; }
+      .canvas-container { margin-left: 0; height: 100px; margin-bottom: 1rem; }
       .nav-links {
-        position: fixed; top: 0; right: 0; height: 100vh; width: 80%;
-        background: var(--bg-alt);
-        flex-direction: column; padding: 4rem 2rem;
+        position: fixed; top: 0; right: 0; height: 100vh; width: 85%;
+        background: var(--card-bg);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        flex-direction: column; padding: 6rem 2rem;
         transform: translateX(100%);
-        transition: transform 0.3s; border-left: 1px solid var(--border);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+        border-left: 1px solid var(--border);
+        box-shadow: -10px 0 30px rgba(0,0,0,0.8);
       }
       .nav-links.active { transform: translateX(0); }
       .nav-toggle { display: block; z-index: 101; }
       .hero-img-box { width: 260px; height: 260px; }
+      
+      .holo-animal { display: none; } /* Hide on mobile for performance/clutter */
     }
   </style>
 </head>
 <body>
+
+  <!-- Geometric Holographic Animals (Background) -->
+  <div class="holo-animal holo-1">
+    <!-- Geometric Tech Owl -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10z"/>
+      <path d="M12 12c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+      <path d="M12 12v10"/>
+      <path d="M8 8h.01M16 8h.01"/>
+    </svg>
+  </div>
+  <div class="holo-animal holo-2">
+    <!-- Geometric Cyber Fox -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 12l-10-10-10 10 5 5 5-5 5 5z"/>
+      <path d="M12 12v10"/>
+      <circle cx="12" cy="12" r="2"/>
+    </svg>
+  </div>
+  <div class="holo-animal holo-3">
+    <!-- Bio-Butterfly -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2s-4 4-4 10c0 6 4 10 4 10s4-4 4-10c0-6-4-10-4-10z"/>
+      <path d="M12 12c-4 0-8-2-8-6s8 6 8 6z"/>
+      <path d="M12 12c4 0 8-2 8-6s-8 6-8 6z"/>
+    </svg>
+  </div>
 
   <!-- Backgrounds -->
   <div class="bg-canvas">
@@ -428,7 +572,10 @@
   <!-- Navbar -->
   <nav class="navbar" id="navbar">
     <div class="container nav-inner">
-      <a href="#" class="logo">Ashritha.</a>
+      <a href="#" class="logo">
+        <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>
+        Ashritha.
+      </a>
       <button class="nav-toggle" id="navToggle">☰</button>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about">About</a></li>
@@ -443,20 +590,29 @@
   <!-- Hero Section -->
   <section class="hero">
     <div class="container hero-wrap">
-      <div class="hero-text fade-up">
+      <div class="hero-text fade-up" style="display: flex; flex-direction: column;">
         <div class="pill">
-          <span>●</span> Available for work
+          <span style="font-size: 0.6rem; color: #3b82f6; filter: drop-shadow(0 0 5px #3b82f6);">●</span> Available for work
         </div>
-        <h1>Yerukonda <span class="text-gradient">Ashritha</span></h1>
+        
+        <!-- Interactive Particle Canvas -->
+        <div class="canvas-container" id="canvas-wrapper">
+            <canvas id="particle-canvas"></canvas>
+        </div>
+
+        <h2 class="hero-subtitle">
+          Electronics & Communication Engineer
+        </h2>
+
         <p>
-          Final-year ECE student bridging the gap between embedded systems and modern web development. Building efficient, scalable solutions.
+          Final-year ECE student bridging the gap between embedded systems and modern web development. Building efficient, scalable, and beautifully designed solutions.
         </p>
         <div class="hero-btns">
           <!-- Main Action -->
           <a href="#projects" class="btn btn-primary">
             View Projects
           </a>
-          <!-- GITHUB BUTTON (Added per request) -->
+          <!-- GITHUB BUTTON -->
           <a href="https://github.com/yerukondaashritha2-boop" target="_blank" class="btn btn-github">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
             GitHub
@@ -477,12 +633,15 @@
   <!-- About -->
   <section id="about">
     <div class="container">
-      <h2 class="section-title fade-up">About Me</h2>
+      <h2 class="section-title fade-up">
+        About Me 
+        <svg class="title-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </h2>
       <div class="spotlight-group grid-1 fade-up delay-100">
         <div class="card">
           <div class="card-content">
-            <p style="color: var(--text-muted); font-size: 1.1rem;">
-              I am a final-year Electronics and Communication Engineering (ECE) student passionate about solving real-world problems through technology. With a strong foundation in both hardware (Embedded systems, IoT) and software (Web Development, Database Management), I aim to create integrated solutions. I thrive in collaborative environments and am constantly learning new technologies to stay ahead in the tech landscape.
+            <p style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.9;">
+              I am a final-year Electronics and Communication Engineering (ECE) student passionate about solving real-world problems through technology. With a strong foundation in both hardware <span class="text-accent font-bold">(Embedded systems, IoT)</span> and software <span class="text-accent font-bold">(Web Development, Database Management)</span>, I aim to create integrated solutions. I thrive in collaborative environments and am constantly learning new technologies to stay ahead in the tech landscape.
             </p>
           </div>
         </div>
@@ -498,8 +657,7 @@
         <!-- Card 1 -->
         <div class="card delay-100">
           <div class="card-content">
-            <h3 class="text-accent">Languages</h3>
-            <div style="margin-top: 1rem;"></div>
+            <h3 class="text-accent" style="margin-bottom: 1.5rem; font-size: 1.3rem;">Languages</h3>
             <ul class="skill-list">
               <li><span class="skill-icon">C</span> C Programming</li>
               <li><span class="skill-icon">Py</span> Python</li>
@@ -511,8 +669,7 @@
         <!-- Card 2 -->
         <div class="card delay-200">
           <div class="card-content">
-            <h3 class="text-accent">Web Tech</h3>
-            <div style="margin-top: 1rem;"></div>
+            <h3 class="text-accent" style="margin-bottom: 1.5rem; font-size: 1.3rem;">Web Tech</h3>
             <ul class="skill-list">
               <li><span class="skill-icon">&lt;/&gt;</span> HTML5 & CSS3</li>
               <li><span class="skill-icon">Re</span> React (Learning)</li>
@@ -524,8 +681,7 @@
         <!-- Card 3 -->
         <div class="card delay-300">
           <div class="card-content">
-            <h3 class="text-accent">Hardware</h3>
-            <div style="margin-top: 1rem;"></div>
+            <h3 class="text-accent" style="margin-bottom: 1.5rem; font-size: 1.3rem;">Hardware</h3>
             <ul class="skill-list">
               <li><span class="skill-icon">IoT</span> Internet of Things</li>
               <li><span class="skill-icon">Ard</span> Arduino & RPi</li>
@@ -546,7 +702,7 @@
         
         <!-- Project 1 -->
         <article class="card project-card delay-100">
-          <div class="card-content">
+          <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <h3>Soil Monitoring System</h3>
             <div class="project-tags">
               <span class="tag">IoT</span>
@@ -557,7 +713,6 @@
               Designed an eco-friendly, non-electric soil monitoring system to optimize agricultural productivity. Utilizes bimetallic strips and mechanical gears to track moisture and temperature without external power.
             </p>
             <div class="project-btn-wrap">
-              <!-- ADDED GITHUB BUTTON TO PROJECT -->
               <a href="https://github.com/yerukondaashritha2-boop/Deadline-Monitoring-Alert-Automation-System.git" class="project-link" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                 View Code
@@ -568,7 +723,7 @@
 
         <!-- Project 2 -->
         <article class="card project-card delay-200">
-          <div class="card-content">
+          <div class="card-content" style="height: 100%; display: flex; flex-direction: column;">
             <h3>Full Stack Web App</h3>
             <div class="project-tags">
               <span class="tag">React</span>
@@ -579,7 +734,6 @@
               Currently developing a scalable full-stack application. Features include user authentication, real-time database updates, and a responsive UI. (Work in Progress).
             </p>
             <div class="project-btn-wrap">
-              <!-- ADDED GITHUB BUTTON TO PROJECT -->
               <a href="#" class="project-link" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
                 View Code
@@ -600,27 +754,30 @@
         <!-- Experience Column -->
         <div class="card fade-up">
           <div class="card-content">
-            <h3 style="margin-bottom: 1.5rem;">Experience</h3>
+            <h3 style="margin-bottom: 2.5rem; font-size: 1.8rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Experience
+            </h3>
             
             <div class="timeline-item">
               <div class="timeline-date">Current</div>
               <div class="timeline-title">Co-Team Leader</div>
               <div class="timeline-place">Blue Planner</div>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">
+              <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">
                 Leading team coordination and ensuring project milestones for "Blue Planner Infiltration".
               </p>
             </div>
 
-            <div class="timeline-item" style="margin-top: 1.5rem;">
+            <div class="timeline-item" style="margin-top: 2rem;">
               <div class="timeline-date">Training</div>
               <div class="timeline-title">Prompt Engineering</div>
               <div class="timeline-place">ChatGPT Training</div>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">
+              <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">
                 Advanced prompt design and AI tool utilization.
               </p>
             </div>
 
-            <div class="timeline-item" style="margin-top: 1.5rem;">
+            <div class="timeline-item" style="margin-top: 2rem; border-left-color: transparent;">
               <div class="timeline-date">Internship</div>
               <div class="timeline-title">Java Full Stack</div>
               <div class="timeline-place">Virtual Internship</div>
@@ -631,27 +788,30 @@
         <!-- Education Column -->
         <div class="card fade-up delay-100">
           <div class="card-content">
-            <h3 style="margin-bottom: 1.5rem;">Education</h3>
+            <h3 style="margin-bottom: 2.5rem; font-size: 1.8rem; color: var(--accent-secondary); display: flex; align-items: center; gap: 0.5rem;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+              Education
+            </h3>
             
             <div class="timeline-item">
               <div class="timeline-date">2022 - 2026</div>
               <div class="timeline-title">B.Tech Electronics (ECE)</div>
               <div class="timeline-place">Nalla Malla Reddy Engineering College</div>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">Pursuing final year.</p>
+              <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">Pursuing final year.</p>
             </div>
 
-            <div class="timeline-item" style="margin-top: 1.5rem;">
+            <div class="timeline-item" style="margin-top: 2rem;">
               <div class="timeline-date">2020 - 2022</div>
               <div class="timeline-title">Intermediate (MPC)</div>
               <div class="timeline-place">SR Junior College</div>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">76% Aggregate</p>
+              <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">76% Aggregate</p>
             </div>
 
-            <div class="timeline-item" style="margin-top: 1.5rem;">
+            <div class="timeline-item" style="margin-top: 2rem; border-left-color: transparent;">
               <div class="timeline-date">2020</div>
               <div class="timeline-title">Secondary School (SSC)</div>
               <div class="timeline-place">Shradha High School</div>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">10 CGPA</p>
+              <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem;">10 CGPA</p>
             </div>
           </div>
         </div>
@@ -668,19 +828,19 @@
         
         <div class="card">
           <div class="card-content">
-            <h3>Let's Connect</h3>
-            <p style="margin: 1rem 0 2rem; color: var(--text-muted);">
+            <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">Let's Connect</h3>
+            <p style="margin: 1rem 0 2.5rem; color: var(--text-muted); font-size: 1.05rem;">
               I'm currently looking for full-time opportunities or internships in software development. If you have a question or just want to say hi, my inbox is always open!
             </p>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-              <a href="mailto:yerukondaashritha2@gmail.com" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <a href="mailto:yerukondaashritha2@gmail.com" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 1rem; transition: color 0.3s;">
                 <span class="skill-icon">✉</span> yerukondaashritha2@gmail.com
               </a>
-              <a href="tel:+917680812779" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <a href="tel:+917680812779" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 1rem; transition: color 0.3s;">
                 <span class="skill-icon">📞</span> +91 7680812779
               </a>
-              <a href="https://www.linkedin.com/in/ashritha-yerukonda-3093b3325" target="_blank" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 0.8rem;">
+              <a href="https://www.linkedin.com/in/ashritha-yerukonda-3093b3325" target="_blank" style="color: #fff; text-decoration: none; display: flex; align-items: center; gap: 1rem; transition: color 0.3s;">
                 <span class="skill-icon">in</span> LinkedIn Profile
               </a>
             </div>
@@ -697,9 +857,9 @@
                 <input type="email" class="form-input" placeholder="Email" required>
               </div>
               <div class="form-group">
-                <textarea rows="4" class="form-input" placeholder="Message" required></textarea>
+                <textarea rows="4" class="form-input" placeholder="Message" required style="resize: vertical;"></textarea>
               </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+              <button type="submit" class="btn btn-primary" style="width: 100%; border: none; font-size: 1.1rem; padding: 1.2rem;">Send Message</button>
             </form>
           </div>
         </div>
@@ -708,14 +868,180 @@
     </div>
   </section>
 
-  <footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem;">
+  <footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.95rem; background: rgba(0,0,0,0.2);">
     <p>© <span id="year"></span> Yerukonda Ashritha. All rights reserved.</p>
+    <div style="margin-top: 10px; opacity: 0.5;">
+      <!-- Sleeping cat ASCII art -->
+      <pre style="font-family: monospace; font-size: 0.8rem; line-height: 1.2; margin: 0;">
+  |\__/,|   (`\
+_.|o o  |_   ) )
+-(((---(((--------
+      </pre>
+    </div>
   </footer>
 
   <script>
+    /**
+     * --- Interactive Particle Logo Logic ---
+     */
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    let particlesArray = [];
+    let mouse = { x: null, y: null, radius: 80 };
+    let animationFrameId;
+
+    // Track mouse position relative to canvas
+    canvas.addEventListener('mousemove', function(event) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = event.clientX - rect.left;
+        mouse.y = event.clientY - rect.top;
+    });
+
+    canvas.addEventListener('mouseout', function() {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    canvas.addEventListener('touchmove', function(event) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = event.touches[0].clientX - rect.left;
+        mouse.y = event.touches[0].clientY - rect.top;
+    });
+    canvas.addEventListener('touchend', function() {
+        mouse.x = undefined;
+        mouse.y = undefined;
+    });
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x + (Math.random() * 20 - 10);
+            this.y = y + (Math.random() * 20 - 10);
+            this.baseX = x;
+            this.baseY = y;
+            this.size = 2; // Sleek particles
+            this.density = (Math.random() * 30) + 5;
+            this.color = color;
+        }
+
+        draw() {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.size, this.size);
+        }
+
+        update() {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            let forceDirectionX = dx / distance;
+            let forceDirectionY = dy / distance;
+            let maxDistance = mouse.radius;
+            let force = (maxDistance - distance) / maxDistance;
+            let directionX = forceDirectionX * force * this.density;
+            let directionY = forceDirectionY * force * this.density;
+
+            if (distance < mouse.radius && mouse.x !== undefined) {
+                this.x -= directionX;
+                this.y -= directionY;
+            } else {
+                if (this.x !== this.baseX) {
+                    let dx = this.x - this.baseX;
+                    this.x -= dx / 15;
+                }
+                if (this.y !== this.baseY) {
+                    let dy = this.y - this.baseY;
+                    this.y -= dy / 15;
+                }
+            }
+        }
+    }
+
+    function initParticles() {
+        particlesArray = [];
+        
+        let containerWidth = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth;
+        if (!containerWidth || containerWidth <= 0) {
+            containerWidth = window.innerWidth || 800;
+        }
+        
+        const maxWidth = Math.min(containerWidth, 800);
+        
+        canvas.width = Math.max(maxWidth, 300); 
+        canvas.height = canvas.parentElement.clientHeight || 150; 
+        
+        let text = "ASHRITHA";
+        ctx.fillStyle = 'white';
+        
+        let fontSize = canvas.width < 500 ? 50 : 90;
+        ctx.font = `800 ${fontSize}px 'Inter', sans-serif`; 
+        ctx.textAlign = canvas.width < 768 ? 'center' : 'left';
+        ctx.textBaseline = 'middle';
+
+        let textX = canvas.width < 768 ? canvas.width / 2 : 10;
+        ctx.fillText(text, textX, canvas.height / 2);
+        
+        const textCoordinates = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let minX = canvas.width, maxX = 0;
+        const gap = canvas.width < 768 ? 3 : 4;
+
+        for (let y = 0, y2 = textCoordinates.height; y < y2; y += gap) {
+            for (let x = 0, x2 = textCoordinates.width; x < x2; x += gap) {
+                if (textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128) {
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                }
+            }
+        }
+
+        let textWidth = maxX - minX;
+
+        for (let y = 0, y2 = textCoordinates.height; y < y2; y += gap) {
+            for (let x = 0, x2 = textCoordinates.width; x < x2; x += gap) {
+                if (textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128) {
+                    
+                    let progress = (x - minX) / textWidth;
+                    progress = Math.max(0, Math.min(1, progress));
+                    
+                    // Cyber-Synthwave Gradient: Blue to Pink
+                    // Start (Blue): rgb(59, 130, 246)
+                    // End (Pink): rgb(236, 72, 153)
+                    let r = Math.floor(59 + (236 - 59) * progress);
+                    let g = Math.floor(130 + (72 - 130) * progress);
+                    let b = Math.floor(246 + (153 - 246) * progress);
+                    
+                    let color = `rgb(${r},${g},${b})`;
+                    
+                    particlesArray.push(new Particle(x, y, color));
+                }
+            }
+        }
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].draw();
+            particlesArray[i].update();
+        }
+        animationFrameId = requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            initParticles();
+            animateParticles();
+        }, 150);
+    });
+
+    window.addEventListener('resize', () => {
+        cancelAnimationFrame(animationFrameId);
+        initParticles();
+        animateParticles();
+    });
+
+
     // --- Spotlight Effect Logic (The "Unique" Animation) ---
-    // This tracks the mouse over cards and updates CSS variables
-    // to create the flashlight glow effect.
     const handleOnMouseMove = e => {
       const { currentTarget: target } = e;
       const rect = target.getBoundingClientRect();
@@ -775,12 +1101,13 @@
       const btn = e.target.querySelector('button');
       const originalText = btn.textContent;
       btn.textContent = "Message Sent!";
-      btn.style.background = "#22c55e"; // Green
+      btn.style.background = "#3b82f6"; // Blue
       e.target.reset();
       
       setTimeout(() => {
         btn.textContent = originalText;
-        btn.style.background = "";
+        btn.style.background = "var(--text)";
+        btn.style.color = "var(--bg)";
       }, 3000);
     });
 
